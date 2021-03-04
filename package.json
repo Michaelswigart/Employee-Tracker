@@ -1,0 +1,24 @@
+{
+  "name": "Employee-Tracker",
+  "version": "1.0.0",
+  "description": "Employee-Tracker",
+  "main": "employee-tracker.js",
+  "dependencies": {
+    "inquirer": "^8.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Michaelswigart/Employee-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Michaelswigart/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/Michaelswigart/Employee-Tracker#readme"
+}
