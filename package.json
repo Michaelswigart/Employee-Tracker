@@ -4,7 +4,10 @@
   "description": "Employee-Tracker",
   "main": "employee-tracker.js",
   "dependencies": {
-    "inquirer": "^8.0.0"
+    "console.table": "^0.10.0",
+    "inquirer": "^8.0.0",
+    "mysql": "^2.18.1",
+    "promise-mysql": "^5.0.3"
   },
   "devDependencies": {},
   "scripts": {
