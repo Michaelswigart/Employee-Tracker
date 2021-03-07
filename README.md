@@ -34,6 +34,12 @@
     mysql - Used to connect to the MySQL database and perform queries
     promise-mysql - Used to create promises from MySQL queries
   ## Images
+  ![employee-tracker js](https://user-images.githubusercontent.com/73671076/110248106-15c29500-7f35-11eb-8419-11ac3dd8439a.png)
+  
+  ![employee-tracker1 js](https://user-images.githubusercontent.com/73671076/110248109-165b2b80-7f35-11eb-8611-1c73d90e8e11.png)
+  
+  ![employee-tracker2 js](https://user-images.githubusercontent.com/73671076/110248111-178c5880-7f35-11eb-8650-1f4d386a9b24.png)
+  
   ## Questions
    If you have any questions reach me @ 
    Email : [sherlockholmes.swigart92@gmail.com](mailto:sherlockholmes.swigart92@gmail.com)
