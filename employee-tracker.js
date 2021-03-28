@@ -1,19 +1,18 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const consoleTable = require("console.table");
 const promisemysql = require("promise-mysql");
 
 // Connection Properties
-const connectionProperties = {
-    host: "localhost",
-    port: 3306,
+const conProperties = {
+     port: 3306,
+     host: "localhost",
     user: "root",
+    database: "employees_DB",
     password: "12345",
-    database: "employees_DB"
 }
 
 // Creating Connection
-const connection = mysql.createConnection(connectionProperties);
+const connection = mysql.createConnection(conProperties);
 
 
 // Establishing Connection to database
@@ -51,10 +50,10 @@ function mainMenu(){
         "View department budgets"
       ]
     })
-    .then((answer) => {
+    .then((choice) => {
 
         // Switch case depending on user option
-        switch (answer.action) {
+        switch (choice.action) {
             case "View all employees":
                 viewAllEmp();
                 break;
@@ -106,10 +105,10 @@ function mainMenu(){
 function viewAllEmp(){
 
     // Query to view all employees
-    let query = "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC";
+    let queryString = "SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id ORDER BY ID ASC";
 
     // Query from connection
-    connection.query(query, function(err, res) {
+    connection.query(queryString, function(err, res) {
         if(err) return err;
         console.log("\n");
 
@@ -125,10 +124,10 @@ function viewAllEmp(){
 function viewAllEmpByDept(){
 
     // Set global array to store department names
-    let deptArr = [];
+    let departmentArr = [];
 
     // Create new connection using promise-sql
-    promisemysql.createConnection(connectionProperties
+    promisemysql.createConnection(conProperties
     ).then((conn) => {
 
         // Query just names of departments
@@ -138,7 +137,7 @@ function viewAllEmpByDept(){
         // Place all names within deptArr
         deptQuery = value;
         for (i=0; i < value.length; i++){
-            deptArr.push(value[i].name);
+            departmentArr.push(value[i].name);
             
         }
     }).then(() => {
@@ -148,13 +147,13 @@ function viewAllEmpByDept(){
             name: "department",
             type: "list",
             message: "Which department would you like to search?",
-            choices: deptArr
+            choices: departmentArr
         })    
         .then((answer) => {
 
             // Query all employees depending on selected department
-            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE department.name = '${answer.department}' ORDER BY ID ASC`;
-            connection.query(query, (err, res) => {
+            const queryString = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE department.name = '${answer.department}' ORDER BY ID ASC`;
+            connection.query(queryString, (err, res) => {
                 if(err) return err;
                 
                 // Show results in console.table
@@ -172,10 +171,10 @@ function viewAllEmpByDept(){
 function viewAllEmpByRole(){
 
     // set global array to store all roles
-    let roleArr = [];
+    let roleArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties)
+    promisemysql.createConnection(conProperties)
     .then((conn) => {
 
         // Query all roles
@@ -184,7 +183,7 @@ function viewAllEmpByRole(){
 
         // Place all roles within the roleArry
         for (i=0; i < roles.length; i++){
-            roleArr.push(roles[i].title);
+            roleArray.push(roles[i].title);
         }
     }).then(() => {
 
@@ -193,13 +192,13 @@ function viewAllEmpByRole(){
             name: "role",
             type: "list",
             message: "Which role would you like to search?",
-            choices: roleArr
+            choices: roleArray
         })    
         .then((answer) => {
 
             // Query all employees by role selected by user
-            const query = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE role.title = '${answer.role}' ORDER BY ID ASC`;
-            connection.query(query, (err, res) => {
+            const queryString = `SELECT e.id AS ID, e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title AS Title, department.name AS Department, role.salary AS Salary, concat(m.first_name, ' ' ,  m.last_name) AS Manager FROM employee e LEFT JOIN employee m ON e.manager_id = m.id INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE role.title = '${answer.role}' ORDER BY ID ASC`;
+            connection.query(queryString, (err, res) => {
                 if(err) return err;
 
                 // show results using console.table
