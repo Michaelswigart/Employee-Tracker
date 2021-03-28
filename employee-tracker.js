@@ -214,11 +214,11 @@ function viewAllEmpByRole(){
 function addEmp(){
 
     // Create two global array to hold 
-    let roleArr = [];
-    let managerArr = [];
+    let roleArray = [];
+    let managerArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties
+    promisemysql.createConnection(conProperties
     ).then((conn) => {
 
         // Query  all roles and all manager. Pass as a promise
@@ -230,19 +230,19 @@ function addEmp(){
 
         // Place all roles in array
         for (i=0; i < roles.length; i++){
-            roleArr.push(roles[i].title);
+            roleArray.push(roles[i].title);
         }
 
         // place all managers in array
         for (i=0; i < managers.length; i++){
-            managerArr.push(managers[i].Employee);
+            managerArray.push(managers[i].Employee);
         }
 
         return Promise.all([roles, managers]);
     }).then(([roles, managers]) => {
 
         // add option for no manager
-        managerArr.unshift('--');
+        managerArray.unshift('--');
 
         inquirer.prompt([
             {
@@ -282,13 +282,13 @@ function addEmp(){
                 name: "role",
                 type: "list",
                 message: "What is their role?",
-                choices: roleArr
+                choices: roleArray
             },{
                 // Prompt user for manager
                 name: "manager",
                 type: "list",
                 message: "Who is their manager?",
-                choices: managerArr
+                choices: managerArray
             }]).then((answer) => {
 
                 // Set variable for IDs
@@ -327,10 +327,10 @@ function addEmp(){
 function addRole(){
 
     // Create array of departments
-    let departmentArr = [];
+    let departmentArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties)
+    promisemysql.createConnection(conProperties)
     .then((conn) => {
 
         // Query all departments
@@ -340,7 +340,7 @@ function addRole(){
         
         // Place all departments in array
         for (i=0; i < departments.length; i++){
-            departmentArr.push(departments[i].name);
+            departmentArray.push(departments[i].name);
         }
 
         return departments;
@@ -364,7 +364,7 @@ function addRole(){
                 name: "dept",
                 type: "list",
                 message: "Department: ",
-                choices: departmentArr
+                choices: departmentArray
             }]).then((answer) => {
 
                 // Set department ID variable
@@ -416,11 +416,11 @@ function addDept(){
 function updateEmpRole(){
 
     // create employee and role array
-    let employeeArr = [];
-    let roleArr = [];
+    let employeeArray = [];
+    let roleArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties
+    promisemysql.createConnection(conProperties
     ).then((conn) => {
         return Promise.all([
 
@@ -432,12 +432,12 @@ function updateEmpRole(){
 
         // place all roles in array
         for (i=0; i < roles.length; i++){
-            roleArr.push(roles[i].title);
+            roleArray.push(roles[i].title);
         }
 
         // place all empoyees in array
         for (i=0; i < employees.length; i++){
-            employeeArr.push(employees[i].Employee);
+            employeeArray.push(employees[i].Employee);
             //console.log(value[i].name);
         }
 
@@ -450,13 +450,13 @@ function updateEmpRole(){
                 name: "employee",
                 type: "list",
                 message: "Who would you like to edit?",
-                choices: employeeArr
+                choices: employeeArray
             }, {
                 // Select role to update employee
                 name: "role",
                 type: "list",
                 message: "What is their new role?",
-                choices: roleArr
+                choices: roleArray
             },]).then((answer) => {
 
                 let roleID;
@@ -493,12 +493,10 @@ function updateEmpRole(){
 
 // Update employee manager
 function updateEmpMngr(){
-
     // set global array for employees
-    let employeeArr = [];
-
+    let employeeArray = [];
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties
+    promisemysql.createConnection(conProperties
     ).then((conn) => {
 
         // query all employees
@@ -507,7 +505,7 @@ function updateEmpMngr(){
 
         // place employees in array
         for (i=0; i < employees.length; i++){
-            employeeArr.push(employees[i].Employee);
+            employeeArray.push(employees[i].Employee);
         }
 
         return employees;
@@ -519,13 +517,13 @@ function updateEmpMngr(){
                 name: "employee",
                 type: "list",
                 message: "Who would you like to edit?",
-                choices: employeeArr
+                choices: employeeArray
             }, {
                 // prompt user to select new manager
                 name: "manager",
                 type: "list",
                 message: "Who is their new Manager?",
-                choices: employeeArr
+                choices: employeeArray
             },]).then((answer) => {
 
                 let employeeID;
@@ -561,12 +559,11 @@ function updateEmpMngr(){
 
 // View all employees by manager
 function viewAllEmpByMngr(){
-
     // set manager array
-    let managerArr = [];
+    let managerArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties)
+    promisemysql.createConnection(conProperties)
     .then((conn) => {
 
         // Query all employees
@@ -576,7 +573,7 @@ function viewAllEmpByMngr(){
 
         // place all employees in array
         for (i=0; i < managers.length; i++){
-            managerArr.push(managers[i].manager);
+            managerArray.push(managers[i].manager);
         }
 
         return managers;
@@ -588,7 +585,7 @@ function viewAllEmpByMngr(){
             name: "manager",
             type: "list",
             message: "Which manager would you like to search?",
-            choices: managerArr
+            choices: managerArray
         })    
         .then((answer) => {
 
@@ -602,14 +599,14 @@ function viewAllEmpByMngr(){
             }
 
             // query all employees by selected manager
-            const query = `SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager
+            const queryString = `SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, concat(m.first_name, ' ' ,  m.last_name) AS manager
             FROM employee e
             LEFT JOIN employee m ON e.manager_id = m.id
             INNER JOIN role ON e.role_id = role.id
             INNER JOIN department ON role.department_id = department.id
             WHERE e.manager_id = ${managerID};`;
     
-            connection.query(query, (err, res) => {
+            connection.query(queryString, (err, res) => {
                 if(err) return err;
                 
                 // display results with console.table
@@ -627,10 +624,10 @@ function viewAllEmpByMngr(){
 function deleteEmp(){
 
     // Create global employee array
-    let employeeArr = [];
+    let employeeArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties
+    promisemysql.createConnection(conProperties
     ).then((conn) => {
 
         // Query all employees
@@ -639,7 +636,7 @@ function deleteEmp(){
 
         // Place all employees in array
         for (i=0; i < employees.length; i++){
-            employeeArr.push(employees[i].employee);
+            employeeArray.push(employees[i].employee);
         }
 
         inquirer.prompt([
@@ -648,7 +645,7 @@ function deleteEmp(){
                 name: "employee",
                 type: "list",
                 message: "Who would you like to delete?",
-                choices: employeeArr
+                choices: employeeArray
             }, {
                 // confirm delete of employee
                 name: "yesNo",
@@ -695,10 +692,10 @@ function deleteEmp(){
 function deleteRole(){
 
     // Create role array
-    let roleArr = [];
+    let roleArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties
+    promisemysql.createConnection(conProperties
     ).then((conn) => {
 
         // query all roles
@@ -707,7 +704,7 @@ function deleteRole(){
 
         // add all roles to array
         for (i=0; i < roles.length; i++){
-            roleArr.push(roles[i].title);
+            roleArray.push(roles[i].title);
         }
 
         inquirer.prompt([{
@@ -730,7 +727,7 @@ function deleteRole(){
                 name: "role",
                 type: "list",
                 message: "Which role would you like to delete?",
-                choices: roleArr
+                choices: roleArray
             }, {
                 // confirm to delete role by typing role exactly
                 name: "confirmDelete",
@@ -778,10 +775,10 @@ function deleteRole(){
 function deleteDept(){
 
     // department array
-    let deptArr = [];
+    let deptArray = [];
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties
+    promisemysql.createConnection(conProperties
     ).then((conn) => {
 
         // query all departments
@@ -790,7 +787,7 @@ function deleteDept(){
 
         // add all departments to array
         for (i=0; i < depts.length; i++){
-            deptArr.push(depts[i].name);
+            deptArray.push(depts[i].name);
         }
 
         inquirer.prompt([{
@@ -815,7 +812,7 @@ function deleteDept(){
                 name: "dept",
                 type: "list",
                 message: "Which department would you like to delete?",
-                choices: deptArr
+                choices: deptArray
             }, {
 
                 // confirm with user to delete
@@ -864,7 +861,7 @@ function deleteDept(){
 function viewDeptBudget(){
 
     // Create connection using promise-sql
-    promisemysql.createConnection(connectionProperties)
+    promisemysql.createConnection(conProperties)
     .then((conn) => {
         return  Promise.all([
 
@@ -874,7 +871,7 @@ function viewDeptBudget(){
         ]);
     }).then(([deptSalaies, departments]) => {
         
-        let deptBudgetArr =[];
+        let deptBudgetArray =[];
         let department;
 
         for (d=0; d < departments.length; d++){
@@ -894,12 +891,12 @@ function viewDeptBudget(){
             }
 
             // add to array
-            deptBudgetArr.push(department);
+            deptBudgetArray.push(department);
         }
         console.log("\n");
 
         // display departments budgets using console.table
-        console.table(deptBudgetArr);
+        console.table(deptBudgetArray);
 
         // back to main menu
         mainMenu();
